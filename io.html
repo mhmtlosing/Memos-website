@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple One-Page IO Game</title>
+  <style>
+    body { background: #111; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding-top: 20px; }
+    canvas { background: #222; display: block; margin: 0 auto; border: 2px solid #555; }
+  </style>
+</head>
+<body>
+  <h2>Score: <span id="score">0</span></h2>
+  <canvas id="gameCanvas" width="600" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    let score = 0;
+    let target = { x: 100, y: 100, radius: 20, color: "red" };
+
+    function moveTarget() {
+      target.x = Math.random() * (canvas.width - 40) + 20;
+      target.y = Math.random() * (canvas.height - 40) + 20;
+    }
+
+    canvas.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      const dist = Math.hypot(clickX - target.x, clickY - target.y);
+      if (dist < target.radius) {
+        score++;
+        document.getElementById("score").innerText = score;
+        moveTarget();
+      }
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.arc(target.x, target.y, target.radius, 0, Math.PI * 2);
+      ctx.fillStyle = target.color;
+      ctx.fill();
+      ctx.closePath();
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>
